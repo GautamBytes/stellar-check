@@ -73,3 +73,7 @@ The implementation was merged through [PR #1](https://github.com/GautamBytes/ste
 `stellar-check@0.1.0` was published to npm by `gautam09` under Apache-2.0. The registry archive integrity matched the verified 21-file release archive. A fresh install in a separate temporary project passed ESM import checks, all four offline diagnostic scenarios, provider orchestration, and valid/invalid XDR decoding. The pre-publication check passed all 121 tests, typechecking, and both production builds.
 
 The README, homepage and reading guide now use public npm installation commands. This remains the pre-grant v0.1 release; publication does not imply an independent audit or confirmed ecosystem adoption.
+
+## README patch (v0.1.1)
+
+The npm README is reduced to a short description, installation commands, runtime requirements and a website link for further details. npm requires a new version to refresh this page, so this is a documentation-only patch in the v0.1 release series. The published archive's library JavaScript, declarations and license are byte-identical to v0.1.0.
