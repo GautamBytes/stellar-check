@@ -1,8 +1,8 @@
-# Implementation status — 6 September 2026
+# Implementation status · 6 September 2026
 
-The local v0.1.0 implementation is available as **Stellar Check** (`stellar-check`) in this directory. It implements the technical scope of the supplied $2,200 proposal. The original proposal documents remain unchanged as planning records.
+The v0.1.0 implementation is available as **Stellar Check** (`stellar-check`) on [npm](https://www.npmjs.com/package/stellar-check), with the [public website](https://stellar-check-gamma.vercel.app) deployed on Vercel. It implements the technical scope of the supplied $2,200 proposal. The original proposal documents remain unchanged as planning records.
 
-## Delivered locally
+## Delivered
 
 - TypeScript ESM library and declaration build, with `checkPayment`, `HorizonProvider`, `assessPayment` and public report/provider types.
 - Exact seven-decimal bigint arithmetic, current ledger reserve/fee metadata, sponsorship and liability accounting, exact issuer trustlines, authorization, receiving capacity and SDK memo checks.
@@ -45,12 +45,12 @@ The theme toggle is icon-only. A redesigned navbar groups links, highlights the 
 
 The site now includes a “Why Stellar Check?” section and `/docs.html`. The guide explains purpose, supported problems, a controlled trustline example, report semantics, verification evidence, integration, intended ecosystem benefits, scope and primary references. It has a desktop contents sidebar, mobile contents menu, themed reading surfaces and copyable snippets. The example deep-links to the actual offline fixture. The production build emits Home, Docs and Playground and keeps the payment SDK out of the Docs entry. See [reading experience notes](superpowers/specs/2026-09-06-reading-experience.md).
 
-## Remaining work outside this local implementation
+## Remaining work
 
 - Independent code review and integration feedback; no production audit has been performed.
 - Repository owner: GautamBytes. Confirm whether ecosystem maintainers prefer an upstream contribution or companion package.
 - Use project-maintained testnet accounts for longer-lived demonstrations; included public accounts can change/reset.
-- The complete v0.1 implementation is being submitted through a pull request in GautamBytes/stellar-check. npm publication, public website deployment and any upstream contribution remain separate steps.
+- Any upstream contribution remains a separate step from the published companion package.
 - Obtain real maintainer/pilot feedback and complete the Chapter/grant process separately. No outreach, endorsements, funding approval or application submission is claimed.
 
 Custom provider implementations must enforce their own I/O deadlines. Account observations remain non-atomic. Signatures, sequence numbers, transaction timing/preconditions, surge pricing, submission and finality remain outside the tool’s scope. No clean report guarantees transaction execution.
@@ -65,3 +65,11 @@ The full checker now lives at `/playground.html`. Home retains its interactive h
 `importPaymentXdr` is exported from the library. It decodes supported unsigned V1 payment envelopes locally, preserves exact values and returns explicit unassessed envelope context. Unsupported signed, legacy, fee-bump, muxed, extended-precondition and transaction-extension shapes are rejected. The Playground previews before loading, invalidates changed previews and makes no account reads until Check payment. Guided issue cards focus the relevant fields or copy exact asset details.
 
 The suite now contains 121 tests, including 23 importer tests. Chrome verification covered decode/preview/load, invalid input, network-change invalidation, exact fee conversion, stale report clearing, amount and fee correction shortcuts, copyable trustline details, mobile layouts and both themes. The original XDR is never rebuilt, signed or submitted.
+
+## Public release (v0.1.0)
+
+The implementation was merged through [PR #1](https://github.com/GautamBytes/stellar-check/pull/1). Vercel deploys the public website from `main`, using `npm run demo:build` and `demo/dist`.
+
+`stellar-check@0.1.0` was published to npm by `gautam09` under Apache-2.0. The registry archive integrity matched the verified 21-file release archive. A fresh install in a separate temporary project passed ESM import checks, all four offline diagnostic scenarios, provider orchestration, and valid/invalid XDR decoding. The pre-publication check passed all 121 tests, typechecking, and both production builds.
+
+The README, homepage and reading guide now use public npm installation commands. This remains the pre-grant v0.1 release; publication does not imply an independent audit or confirmed ecosystem adoption.

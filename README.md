@@ -2,9 +2,17 @@
 
 Stellar Check is a read-only TypeScript library for checking a Stellar payment before signing. It reports available balances, reserve requirements, liabilities, trustline authorization, receiving capacity and declared memo requirements.
 
-Pre-grant development version: **0.1.0**. UI and branding iterations remain part of v0.1 until the final product milestone. This package has not been published to npm. The proposal documents are historical planning inputs; see [implementation status](docs/implementation-status.md) for what has actually been verified.
+Pre-grant development version: **0.1.0**. UI and branding iterations remain part of v0.1 until the final product milestone. The proposal documents are historical planning inputs; see [implementation status](https://github.com/GautamBytes/stellar-check/blob/main/docs/implementation-status.md) for what has actually been verified.
 
 The repository includes the library, tests, website and documentation. Historical proposal documents describe the original plan; the implementation status records what was built. CI runs the full check and package validation on pull requests.
+
+## Install
+
+```sh
+npm install stellar-check
+```
+
+Requires Node **22.12 or later**, or a modern browser bundler. [Try the Playground](https://stellar-check-gamma.vercel.app/playground.html) or read the [integration guide](https://stellar-check-gamma.vercel.app/docs.html#integration).
 
 ## Run locally
 
@@ -25,11 +33,11 @@ The homepage keeps a small interactive preview. The full checker lives at `/play
 
 ## Integrate
 
-Build with `npm run build`. Until publication, import from this checkout’s `dist/index.js`, or run `npm pack` and install the resulting local archive in your application.
+Import the installed package in your application. If you use the Stellar SDK directly, install it as a direct dependency too: `npm install @stellar/stellar-sdk`.
 
 ```ts
 import { Networks } from '@stellar/stellar-sdk';
-import { checkPayment, HorizonProvider } from './dist/index.js';
+import { checkPayment, HorizonProvider } from 'stellar-check';
 
 const provider = new HorizonProvider('https://horizon-testnet.stellar.org');
 const report = await checkPayment(
@@ -124,7 +132,7 @@ Each HTTP request, including its response body, has a bounded timeout and uses n
 
 `PaymentProvider` can be implemented with another public-data adapter; its methods return timestamped `Read<T>` envelopes. Custom implementations are responsible for bounded I/O and faithful network/ledger metadata. The orchestrator preserves rejected or malformed observations as incomplete reports. The payment input is copied before asynchronous reads so caller mutations cannot change the assessed intent midway.
 
-For controlled observations, use `assessPayment(intent, snapshot)` directly. This pure function validates relevant account fields and calculates a report without I/O. Offline snapshots must conform to the exported `Snapshot` type. See [the four fixtures](examples/scenarios.ts) and [fixture coverage](docs/fixtures.md).
+For controlled observations, use `assessPayment(intent, snapshot)` directly. This pure function validates relevant account fields and calculates a report without I/O. Offline snapshots must conform to the exported `Snapshot` type. See [the four fixtures](https://github.com/GautamBytes/stellar-check/blob/main/examples/scenarios.ts) and [fixture coverage](https://github.com/GautamBytes/stellar-check/blob/main/docs/fixtures.md).
 
 ## Node and testnet examples
 
@@ -138,7 +146,7 @@ npm run testnet
 npm run testnet -- /absolute/path/testnet-accounts.json
 ```
 
-See [testnet verification](docs/testnet.md) for the manifest requirements and report artifact. The included public accounts can change or disappear at a testnet reset; they are not project-owned fixtures.
+See [testnet verification](https://github.com/GautamBytes/stellar-check/blob/main/docs/testnet.md) for the manifest requirements and report artifact. The included public accounts can change or disappear at a testnet reset; they are not project-owned fixtures.
 
 ## Development
 
@@ -150,10 +158,10 @@ npm run demo:build
 npm pack --dry-run
 ```
 
-`npm run check` runs typechecking, the test suite, the library build and demo production build. Tests run without public network access and use real calculation code and the SDK memo helper with controlled HTTP responses. [Diagnostic meanings](docs/diagnostics.md) and [implementation status](docs/implementation-status.md) describe the current contract and verification.
+`npm run check` runs typechecking, the test suite, the library build and demo production build. Tests run without public network access and use real calculation code and the SDK memo helper with controlled HTTP responses. [Diagnostic meanings](https://github.com/GautamBytes/stellar-check/blob/main/docs/diagnostics.md) and [implementation status](https://github.com/GautamBytes/stellar-check/blob/main/docs/implementation-status.md) describe the current contract and verification.
 
 ## References and license
 
 The implementation follows Stellar’s [sponsored reserve accounting](https://developers.stellar.org/docs/build/guides/transactions/sponsored-reserves), [payment operation reference](https://developers.stellar.org/docs/learn/fundamentals/transactions/list-of-operations) and [SEP-29](https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0029.md). Memo behavior is verified against the pinned `@stellar/stellar-sdk` dependency, version 17.0.1.
 
-Apache-2.0; see [LICENSE](LICENSE). The official Stellar SDK is an Apache-2.0 dependency. No source from the other proposal-referenced wallet projects was copied. Repository owner: GautamBytes. Any upstream contribution, npm publication and longer-term maintenance commitments remain to be agreed.
+Apache-2.0; see [LICENSE](https://github.com/GautamBytes/stellar-check/blob/main/LICENSE). The official Stellar SDK is an Apache-2.0 dependency. No source from the other proposal-referenced wallet projects was copied. Repository owner: GautamBytes. Any upstream contribution and longer-term maintenance commitments remain to be agreed.
