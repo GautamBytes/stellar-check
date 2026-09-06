@@ -142,7 +142,7 @@
             answer before the signature request.
           </p>
           <div class="doc-meta">
-            <span>For builders & curious people</span><span>Local release · v0.1.0</span>
+            <span>For builders & curious people</span><span>Release · v0.1.0</span>
           </div>
           <div class="doc-takeaway">
             <svg class="icon" aria-hidden="true"><use href="#i-shield" /></svg>
@@ -412,23 +412,10 @@
           <p class="section-category">FOR BUILDERS</p>
           <h2>Put it before the signature.</h2>
           <p>
-            The current release is a local TypeScript package with ESM output. It is not published
-            to npm. From this project checkout, use Node 22.12 or later to install, verify and pack
-            it:
+            Install Stellar Check from npm. The package includes ESM output and TypeScript
+            declarations for Node 22.12 or later and modern browser bundlers. The example below
+            also imports network constants from the Stellar SDK, so install both packages:
           </p>
-          <div class="reading-code">
-            <div>
-              <span>IN THE PROJECT CHECKOUT</span
-              ><button type="button" data-copy="setup-code" aria-label="Copy setup commands">
-                <svg class="icon" aria-hidden="true"><use href="#i-copy" /></svg
-                ><span aria-live="polite">Copy</span>
-              </button>
-            </div>
-            <pre id="setup-code" tabindex="0" aria-label="Setup commands"><code>npm ci
-npm run check
-npm pack</code></pre>
-          </div>
-          <p>Then install the resulting archive in your application:</p>
           <div class="reading-code">
             <div>
               <span>IN YOUR APPLICATION</span
@@ -445,7 +432,7 @@ npm pack</code></pre>
               id="install-code"
               tabindex="0"
               aria-label="Installation command"
-            ><code>npm install /path/to/stellar-check-0.1.0.tgz</code></pre>
+            ><code>npm install stellar-check @stellar/stellar-sdk</code></pre>
           </div>
           <p>
             Provide your own sender and recipient public addresses. The example below only reads
@@ -624,7 +611,7 @@ console.log(report.status, report.coverage);
           </div>
         </section>
         <footer class="doc-footer">
-          <span>Stellar Check · Local v0.1.0 · Apache-2.0</span
+          <span>Stellar Check · v0.1.0 · Apache-2.0</span
           ><a href="#overview">Back to top ↑</a>
         </footer>
       </article>
