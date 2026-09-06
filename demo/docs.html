@@ -1,0 +1,634 @@
+<!doctype html>
+<html lang="en" class="docs-root">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Understand what could stop a Stellar payment before signing. Check balances, reserves, trustlines, capacity and memo requirements with an open-source TypeScript library."
+    />
+    <meta name="theme-color" content="#fcfbfe" />
+    <title>Docs · Why Stellar Check exists & how it works</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="/navigation-hero.css" />
+    <link rel="stylesheet" href="/reading.css" />
+  </head>
+  <body class="docs-page">
+    <svg class="icon-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6" /></symbol>
+        <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6" /></symbol>
+        <symbol id="i-code" viewBox="0 0 24 24">
+          <path d="m8 7-5 5 5 5m8-10 5 5-5 5m-5 2 2-14" />
+        </symbol>
+        <symbol id="i-shield" viewBox="0 0 24 24">
+          <path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z" />
+          <path d="m8 11 3 3 5-5" />
+        </symbol>
+        <symbol id="i-wallet" viewBox="0 0 24 24">
+          <path d="M20 8V6H5a2 2 0 0 1 0-4h13v4M3 4v14a2 2 0 0 0 2 2h15V8H3m17 4h-5v4h5" />
+        </symbol>
+        <symbol id="i-link" viewBox="0 0 24 24">
+          <path d="m10 8 3-3a5 5 0 0 1 7 7l-3 3M14 16l-3 3a5 5 0 0 1-7-7l3-3m1 9 8-8" />
+        </symbol>
+        <symbol id="i-note" viewBox="0 0 24 24">
+          <path d="M6 3h12v18H6zM9 8h6m-6 4h6m-6 4h3" />
+        </symbol>
+        <symbol id="i-copy" viewBox="0 0 24 24">
+          <rect x="8" y="8" width="12" height="12" rx="2" />
+          <path d="M16 8V4H4v12h4" />
+        </symbol>
+        <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></symbol>
+        <symbol id="i-globe" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9" />
+          <ellipse cx="12" cy="12" rx="4" ry="9" />
+          <path d="M3 12h18" />
+        </symbol>
+      </defs>
+    </svg>
+    <a class="skip-link" href="#docs-content">Skip to documentation</a>
+    <header class="site-header">
+      <div class="container nav-inner">
+        <a class="brand" href="/" aria-label="Stellar Check home"
+          ><span class="brand-mark" aria-hidden="true"
+            ><svg viewBox="0 0 36 36">
+              <circle cx="18" cy="18" r="12" />
+              <path d="m12 18 4 4 8-9M5 27l4-4M27 9l4-4" /></svg></span
+          ><span
+            >stellar<span class="brand-period">check</span
+            ><span class="brand-sub">STELLAR PAYMENT READINESS</span></span
+          ></a
+        >
+        <nav class="desktop-nav" aria-label="Main navigation">
+          <a href="/#why">Why Stellar Check</a><a href="/playground.html">Playground</a
+          ><a href="/docs.html" aria-current="page">Docs <span aria-hidden="true">↗</span></a>
+        </nav>
+        <div class="nav-actions">
+          <button
+            class="theme-toggle"
+            id="theme-toggle"
+            type="button"
+            aria-label="Dark mode"
+            aria-pressed="false"
+            title="Switch to dark mode"
+          >
+            <svg class="icon theme-moon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5Z" />
+            </svg>
+            <svg class="icon theme-sun" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="4" />
+              <path
+                d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"
+              />
+            </svg>
+          </button>
+          <a class="button button-small button-primary nav-cta" href="/playground.html"
+            >Check a payment <svg class="icon" aria-hidden="true"><use href="#i-arrow" /></svg
+          ></a>
+          <button
+            class="menu-toggle"
+            id="menu-toggle"
+            aria-expanded="false"
+            aria-controls="mobile-nav"
+            aria-label="Open navigation"
+          >
+            <span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <nav id="mobile-nav" class="mobile-nav" aria-label="Mobile navigation" hidden>
+        <a href="/#why">Why Stellar Check</a><a href="/playground.html">Playground</a
+        ><a href="/docs.html" aria-current="page">Docs</a>
+      </nav>
+    </header>
+    <main class="docs-shell container" id="docs-content" tabindex="-1">
+      <aside class="docs-sidebar" aria-label="Documentation contents">
+        <a class="docs-home" href="#overview"
+          ><svg class="icon" aria-hidden="true"><use href="#i-note" /></svg> The field guide
+          <span>v0.1</span></a
+        >
+        <details class="docs-contents" id="docs-contents" open>
+          <summary>
+            On this page <svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg>
+          </summary>
+          <nav class="toc" aria-label="On this page">
+            <p>UNDERSTAND</p>
+            <a href="#overview" aria-current="location">Overview</a
+            ><a href="#why-built">Why we built it</a><a href="#problems">The problems it solves</a
+            ><a href="#example">A real check, explained</a>
+            <p>GO DEEPER</p>
+            <a href="#how-it-works">How it works</a><a href="#confidence">Rules & confidence</a
+            ><a href="#integration">Start integrating</a><a href="#ecosystem">Value for Stellar</a
+            ><a href="#limits">Scope & limits</a><a href="#references">Further reading</a>
+          </nav>
+        </details>
+        <div class="sidebar-note">
+          <span class="status-dot"></span> Read-only by design.
+          <p>Your signature stays with you.</p>
+          <a href="/playground.html">Open the playground ↗</a>
+        </div>
+      </aside>
+      <article class="docs-article">
+        <header class="doc-intro" id="overview" data-doc-section tabindex="-1">
+          <div class="doc-kicker">
+            <span class="eyebrow">THE STELLAR CHECK FIELD GUIDE</span
+            ><span id="reading-time">8 min read</span>
+          </div>
+          <h1>Better payments<br /><span>start with context.</span></h1>
+          <p class="doc-lead">
+            Why we built Stellar Check, the problems it helps you catch, and how to put a useful
+            answer before the signature request.
+          </p>
+          <div class="doc-meta">
+            <span>For builders & curious people</span><span>Local release · v0.1.0</span>
+          </div>
+          <div class="doc-takeaway">
+            <svg class="icon" aria-hidden="true"><use href="#i-shield" /></svg>
+            <div>
+              <strong>The idea in one sentence</strong>
+              <p>
+                Read public account data, check a supported payment, and explain what needs
+                attention before asking someone to sign.
+              </p>
+            </div>
+          </div>
+          <div class="reading-shortcuts">
+            <a href="#example">See an example <span aria-hidden="true">↓</span></a
+            ><a href="#integration">Jump to integration <span aria-hidden="true">↗</span></a>
+          </div>
+        </header>
+        <section class="doc-section" id="why-built" data-doc-section tabindex="-1">
+          <p class="section-category">THE REASON</p>
+          <h2>There’s a gap before “Send”.</h2>
+          <p>
+            A payment form usually starts with an address, an asset and an amount. Those inputs
+            don’t tell the whole story. Some of the sender’s XLM may be reserved. The recipient may
+            not have a trustline for that particular asset. A receiving service may require a memo.
+          </p>
+          <p>
+            We built Stellar Check to make that context available at the point where it is useful:
+            <strong>before the application requests a signature.</strong> It gives builders a
+            consistent way to turn supported account-state problems into specific guidance.
+          </p>
+          <p>
+            The goal is a calmer payment flow. A person should be able to understand what needs to
+            change, who can change it, and when to try again.
+          </p>
+        </section>
+        <section class="doc-section" id="problems" data-doc-section tabindex="-1">
+          <p class="section-category">THE DETAILS THAT MATTER</p>
+          <h2>What could get in the way?</h2>
+          <div class="problem-list">
+            <div>
+              <span class="problem-icon"
+                ><svg class="icon" aria-hidden="true"><use href="#i-wallet" /></svg
+              ></span>
+              <div>
+                <h3>A balance is not a spending limit.</h3>
+                <p>
+                  XLM availability accounts for required reserves, sponsorship, selling liabilities
+                  and the planned fee. An issued asset also has its own available balance.
+                </p>
+                <a
+                  class="source-link"
+                  href="https://developers.stellar.org/docs/build/guides/transactions/sponsored-reserves"
+                  >Stellar reference: sponsored reserves ↗</a
+                >
+              </div>
+            </div>
+            <div>
+              <span class="problem-icon"
+                ><svg class="icon" aria-hidden="true"><use href="#i-link" /></svg
+              ></span>
+              <div>
+                <h3>The right asset needs the right trustline.</h3>
+                <p>
+                  For issued assets, a matching code alone is not enough. The issuer must match too.
+                  The check also considers authorization and the recipient’s remaining capacity.
+                </p>
+                <a
+                  class="source-link"
+                  href="https://developers.stellar.org/docs/build/guides/basics/verify-trustlines"
+                  >Stellar reference: verifying trustlines ↗</a
+                >
+              </div>
+            </div>
+            <div>
+              <span class="problem-icon"
+                ><svg class="icon" aria-hidden="true"><use href="#i-note" /></svg
+              ></span>
+              <div>
+                <h3>Small details carry meaning.</h3>
+                <p>
+                  The expected network must match the provider. A declared memo requirement needs
+                  attention, even when the account and amount otherwise look fine.
+                </p>
+                <a
+                  class="source-link"
+                  href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0029.md"
+                  >Stellar reference: account memo requirements ↗</a
+                >
+              </div>
+            </div>
+          </div>
+        </section>
+        <section class="doc-section" id="example" data-doc-section tabindex="-1">
+          <p class="section-category">A CHECK YOU CAN FOLLOW</p>
+          <h2>One missing trustline.<br />One useful answer.</h2>
+          <p>
+            Imagine sending <strong>1 USD</strong> on Testnet. The sender holds the asset and both
+            accounts exist, but the recipient has no trustline for this exact USD issuer.
+          </p>
+          <div class="case-study">
+            <div class="case-heading">
+              <span class="eyebrow">CONTROLLED EXAMPLE</span
+              ><span class="sample-tag">NO PAYMENT SENT</span>
+            </div>
+            <div class="case-route">
+              <span><small>SENDER</small>1 USD</span
+              ><svg class="icon" aria-hidden="true"><use href="#i-arrow" /></svg
+              ><span><small>RECIPIENT</small>Trustline missing</span>
+            </div>
+            <div class="case-result">
+              <span class="case-symbol" aria-hidden="true">!</span>
+              <div>
+                <strong>The recipient needs a trustline.</strong>
+                <p>
+                  The report identifies the recipient as the affected party and recommends creating
+                  a trustline for the exact asset code and issuer.
+                </p>
+              </div>
+            </div>
+            <dl class="case-facts">
+              <div>
+                <dt>Status</dt>
+                <dd><code>issues_found</code></dd>
+              </div>
+              <div>
+                <dt>Diagnostic</dt>
+                <dd><code>DESTINATION_TRUSTLINE_MISSING</code></dd>
+              </div>
+              <div>
+                <dt>Who can act?</dt>
+                <dd>The recipient</dd>
+              </div>
+            </dl>
+          </div>
+          <ol class="next-steps">
+            <li>
+              <strong>Explain the issue.</strong> Show the asset and issuer, so the recipient knows
+              which trustline is needed.
+            </li>
+            <li>
+              <strong>Let the recipient act.</strong> They establish the trustline in their wallet,
+              with sufficient reserve and any required issuer authorization.
+            </li>
+            <li>
+              <strong>Read fresh state.</strong> Check the payment again. A resolved trustline issue
+              does not prove that every other check will pass.
+            </li>
+          </ol>
+          <a class="doc-action" href="/playground.html?scenario=trustline"
+            >Try the missing-trustline example
+            <svg class="icon" aria-hidden="true"><use href="#i-arrow" /></svg
+          ></a>
+          <p class="doc-caption">
+            This example uses the project’s controlled fixture. Opening it makes no live network
+            request and sends no funds.
+          </p>
+        </section>
+        <section class="doc-section" id="how-it-works" data-doc-section tabindex="-1">
+          <p class="section-category">FROM INPUT TO CONTEXT</p>
+          <h2>Read. Assess. Explain.</h2>
+          <div class="process-flow">
+            <div>
+              <span>01</span>
+              <h3>Describe the payment</h3>
+              <p>
+                Provide the network, public accounts, asset, amount, fee budget and optional memo.
+              </p>
+            </div>
+            <div>
+              <span>02</span>
+              <h3>Read & assess</h3>
+              <p>
+                Read public state through Horizon, validate the supported shape, then evaluate the
+                relevant checks.
+              </p>
+            </div>
+            <div>
+              <span>03</span>
+              <h3>Return a report</h3>
+              <p>
+                Receive a status, diagnostics, exact amounts, coverage and observation metadata.
+              </p>
+            </div>
+          </div>
+          <p>
+            <code>checkPayment(intent, provider)</code> coordinates fresh reads.
+            <code>assessPayment(intent, snapshot)</code> evaluates supplied observations without
+            network access, which is useful for fixtures and tests.
+          </p>
+          <h3>Three outcomes, deliberately different</h3>
+          <div class="outcome-list">
+            <div>
+              <span class="outcome-dot good"></span>
+              <div>
+                <h4>No known issues</h4>
+                <code>no_known_issues</code>
+                <p>
+                  Applicable supported checks completed without finding a diagnosed problem. This is
+                  an observation, not a promise of execution.
+                </p>
+              </div>
+            </div>
+            <div>
+              <span class="outcome-dot warning"></span>
+              <div>
+                <h4>Issues found</h4>
+                <code>issues_found</code>
+                <p>
+                  The checks identified something to address. Each issue includes a stable code,
+                  affected party, explanation and suggested action.
+                </p>
+              </div>
+            </div>
+            <div>
+              <span class="outcome-dot unknown"></span>
+              <div>
+                <h4>Incomplete</h4>
+                <code>incomplete</code>
+                <p>
+                  Input, scope or unavailable observations prevented a complete assessment. Known
+                  issues are retained. Always check the status, even when the issues list is empty.
+                </p>
+              </div>
+            </div>
+          </div>
+          <p class="doc-caption">
+            Coverage marks checks as complete, unresolved or not applicable. “Complete” means the
+            check ran; it may still have found an issue.
+          </p>
+        </section>
+        <section class="doc-section" id="confidence" data-doc-section tabindex="-1">
+          <p class="section-category">CONFIDENCE, WITH EVIDENCE</p>
+          <h2>Make the reasoning inspectable.</h2>
+          <p>
+            The report is grounded in defined rules and observed account data. It does not use an AI
+            guess to decide whether a payment is ready.
+          </p>
+          <ul class="reading-list">
+            <li>
+              <strong>Exact arithmetic.</strong> Amounts are parsed into integer units with
+              seven-decimal precision. Report values remain decimal strings, avoiding floating-point
+              rounding in readiness calculations.
+            </li>
+            <li>
+              <strong>Explicit dependencies.</strong> A missing or malformed observation produces an
+              incomplete result instead of an assumed zero balance or a silent pass.
+            </li>
+            <li>
+              <strong>Network and time context.</strong> Reports carry the expected network,
+              per-read observations and available ledger metadata. The reads are explicitly
+              non-atomic.
+            </li>
+            <li>
+              <strong>Repeatable verification.</strong> The local suite covers reserves,
+              liabilities, trustlines, authorization, capacity, fees, memo behavior and provider
+              failures. The current project has 121 passing tests, including UI theme tests.
+            </li>
+          </ul>
+          <div class="doc-callout">
+            <strong>Test coverage is evidence, not certification.</strong>
+            <p>
+              The library has not had an independent production audit. Separate reads can become
+              stale, and unassessed transaction conditions can still prevent execution.
+            </p>
+          </div>
+        </section>
+        <section class="doc-section" id="integration" data-doc-section tabindex="-1">
+          <p class="section-category">FOR BUILDERS</p>
+          <h2>Put it before the signature.</h2>
+          <p>
+            The current release is a local TypeScript package with ESM output. It is not published
+            to npm. From this project checkout, use Node 22.12 or later to install, verify and pack
+            it:
+          </p>
+          <div class="reading-code">
+            <div>
+              <span>IN THE PROJECT CHECKOUT</span
+              ><button type="button" data-copy="setup-code" aria-label="Copy setup commands">
+                <svg class="icon" aria-hidden="true"><use href="#i-copy" /></svg
+                ><span aria-live="polite">Copy</span>
+              </button>
+            </div>
+            <pre id="setup-code" tabindex="0" aria-label="Setup commands"><code>npm ci
+npm run check
+npm pack</code></pre>
+          </div>
+          <p>Then install the resulting archive in your application:</p>
+          <div class="reading-code">
+            <div>
+              <span>IN YOUR APPLICATION</span
+              ><button
+                type="button"
+                data-copy="install-code"
+                aria-label="Copy installation command"
+              >
+                <svg class="icon" aria-hidden="true"><use href="#i-copy" /></svg
+                ><span aria-live="polite">Copy</span>
+              </button>
+            </div>
+            <pre
+              id="install-code"
+              tabindex="0"
+              aria-label="Installation command"
+            ><code>npm install /path/to/stellar-check-0.1.0.tgz</code></pre>
+          </div>
+          <p>
+            Provide your own sender and recipient public addresses. The example below only reads
+            state:
+          </p>
+          <div class="reading-code">
+            <div>
+              <span>PAYMENT-CHECK.TS</span
+              ><button type="button" data-copy="docs-code" aria-label="Copy payment check example">
+                <svg class="icon" aria-hidden="true"><use href="#i-copy" /></svg
+                ><span aria-live="polite">Copy</span>
+              </button>
+            </div>
+            <pre
+              id="docs-code"
+              tabindex="0"
+              aria-label="TypeScript integration example"
+            ><code><span class="syntax-keyword">import</span> { Networks } <span class="syntax-keyword">from</span> <span class="syntax-string">'@stellar/stellar-sdk'</span>;
+<span class="syntax-keyword">import</span> { checkPayment, HorizonProvider }
+  <span class="syntax-keyword">from</span> <span class="syntax-string">'stellar-check'</span>;
+
+<span class="syntax-keyword">const</span> provider = <span class="syntax-keyword">new</span> HorizonProvider(
+  <span class="syntax-string">'https://horizon-testnet.stellar.org'</span>
+);
+
+<span class="syntax-keyword">const</span> report = <span class="syntax-keyword">await</span> checkPayment({
+  networkPassphrase: Networks.TESTNET,
+  source: senderPublicAddress,
+  destination: recipientPublicAddress,
+  asset: { type: <span class="syntax-string">'native'</span> },
+  amount: <span class="syntax-string">'2.5000000'</span>,
+  feeBudget: <span class="syntax-string">'0.0000100'</span>,
+}, provider);
+
+console.log(report.status, report.coverage);
+<span class="syntax-keyword">for</span> (<span class="syntax-keyword">const</span> issue <span class="syntax-keyword">of</span> report.issues) {
+  console.log(issue.code, issue.party, issue.action);
+}</code></pre>
+          </div>
+          <p>
+            <code>feeBudget</code> is the total planned fee in <strong>XLM, not stroops</strong>.
+            Use decimal strings for amounts. For an issued asset, provide
+            <code>{ type: 'credit', code, issuer }</code>; the issuer is part of the asset’s
+            identity.
+          </p>
+          <h3>Start from an unsigned transaction</h3>
+          <p>The Playground can decode transaction XDR locally and preview the payment before loading it into the form. Select the network explicitly: the envelope does not identify its network. Loading selects Live Horizon; public reads begin only when you click Check payment.</p>
+          <p>In code, use <code>importPaymentXdr(xdr, networkPassphrase)</code>. A successful result provides <code>payment</code> for the checker and <code>context</code> with the original sequence and time bounds. These envelope conditions are not assessed. Editing imported values changes the form only, not the original XDR.</p>
+          <p>The importer accepts one unsigned V1 classic payment in the supported scope. It rejects signed envelopes, fee bumps, legacy envelopes, transaction extensions and extended preconditions. Amounts and fees stay exact; text memos must be valid UTF-8.</p>
+          <a class="doc-action" href="/playground.html#xdr-import">Try importing XDR <span aria-hidden="true">↗</span></a>
+          <h3>Follow the issue to its input</h3>
+          <p>Use Review amount, Edit fee budget or Edit memo to jump to the relevant form field. For trustline and authorization issues, Copy asset details provides the exact issuer and affected accounts. Correct what you control, then run a fresh check.</p>
+          <h3>Integrate the decision, not just the call</h3>
+          <p>
+            Branch on <code>report.status</code>, surface the relevant actions, and refresh when
+            payment inputs change or before confirmation. Signing, sequence handling, fee selection
+            and submission remain your application’s responsibility.
+          </p>
+          <div class="doc-callout">
+            <strong>Public reads are still network requests.</strong>
+            <p>
+              Live checks disclose the queried public addresses to your configured Horizon provider.
+              The library never needs a secret key or wallet connection.
+            </p>
+          </div>
+        </section>
+        <section class="doc-section" id="ecosystem" data-doc-section tabindex="-1">
+          <p class="section-category">THE ECOSYSTEM BENEFIT</p>
+          <h2>Useful once. Reusable across apps.</h2>
+          <p>
+            The intended contribution is a shared payment-readiness component that Stellar builders
+            can inspect, test and integrate. It builds on the official SDK and public network data.
+          </p>
+          <div class="benefit-list">
+            <div>
+              <h3>For wallet & payment developers</h3>
+              <p>
+                Reusable calculations and stable diagnostic codes can reduce repeated integration
+                work and make payment guidance more consistent.
+              </p>
+            </div>
+            <div>
+              <h3>For people making payments</h3>
+              <p>
+                Specific explanations can make it easier to distinguish an amount problem from a
+                recipient or issuer action.
+              </p>
+            </div>
+            <div>
+              <h3>For maintainers & contributors</h3>
+              <p>
+                Explicit scope, controlled fixtures and an Apache-2.0 license give others a concrete
+                starting point for review and improvement.
+              </p>
+            </div>
+          </div>
+          <p>
+            These are intended benefits. We do not yet have adoption data, measured support-ticket
+            reductions or maintainer endorsements. Integration feedback and independent review are
+            the next sources of evidence.
+          </p>
+        </section>
+        <section class="doc-section" id="limits" data-doc-section tabindex="-1">
+          <p class="section-category">HONEST BOUNDARIES</p>
+          <h2>Know what the report covers.</h2>
+          <div class="scope-columns">
+            <div>
+              <h3>Supported in v0.1</h3>
+              <ul>
+                <li>One classic payment</li>
+                <li>Distinct Stellar G accounts</li>
+                <li>Native XLM or an issued asset</li>
+                <li>The same source and fee payer</li>
+                <li>Supported account-state and memo checks</li>
+              </ul>
+            </div>
+            <div>
+              <h3>Outside this release</h3>
+              <ul>
+                <li>Path payments, batches and fee bumps</li>
+                <li>Soroban and M addresses</li>
+                <li>Self-payments or an asset issuer as a party</li>
+                <li>Signatures and sequence numbers</li>
+                <li>Submission, finality and surge-fee inclusion</li>
+              </ul>
+            </div>
+          </div>
+          <p>
+            A supplied memo establishes presence only. It does not verify the intended customer or
+            prove that the receiving service will credit the deposit correctly. Obtain the actual
+            required memo from that service.
+          </p>
+          <p>
+            <strong>A clean report never guarantees a successful transaction.</strong> Unsupported
+            input and unavailable data are reported explicitly, and account state may change
+            immediately after a read.
+          </p>
+        </section>
+        <section class="doc-section" id="references" data-doc-section tabindex="-1">
+          <p class="section-category">KEEP EXPLORING</p>
+          <h2>Go straight to the sources.</h2>
+          <p>
+            Use these primary references to understand the network rules behind the checks. This
+            project is an independent tool, not an official Stellar product.
+          </p>
+          <div class="reference-links">
+            <a
+              href="https://developers.stellar.org/docs/build/guides/transactions/sponsored-reserves"
+              ><span
+                >Sponsored reserves<small>How sponsorship affects balance requirements</small></span
+              ><span aria-hidden="true">↗</span></a
+            ><a href="https://developers.stellar.org/docs/build/guides/basics/verify-trustlines"
+              ><span
+                >Verify trustlines<small
+                  >Asset identity, authorization and receiving capacity</small
+                ></span
+              ><span aria-hidden="true">↗</span></a
+            ><a href="https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0029.md"
+              ><span>SEP-29: memo requirements<small>The account-level memo convention</small></span
+              ><span aria-hidden="true">↗</span></a
+            ><a
+              href="https://developers.stellar.org/docs/learn/fundamentals/transactions/list-of-operations"
+              ><span
+                >Stellar operation reference<small
+                  >Payment operations and their conditions</small
+                ></span
+              ><span aria-hidden="true">↗</span></a
+            >
+          </div>
+          <div class="doc-finish">
+            <span class="eyebrow">CONTEXT, MEET PRACTICE.</span>
+            <h3>See what a payment tells you.</h3>
+            <a class="button button-primary" href="/playground.html?scenario=trustline"
+              >Try a sample check <svg class="icon" aria-hidden="true"><use href="#i-arrow" /></svg
+            ></a>
+          </div>
+        </section>
+        <footer class="doc-footer">
+          <span>Stellar Check · Local v0.1.0 · Apache-2.0</span
+          ><a href="#overview">Back to top ↑</a>
+        </footer>
+      </article>
+    </main>
+    <script type="module" src="/docs.ts"></script>
+  </body>
+</html>

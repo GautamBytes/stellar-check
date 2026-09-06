@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Check a Stellar payment with sample scenarios or live public account data. Explore balances, trustlines, memo requirements and a clear readiness report."
+    />
+    <meta name="theme-color" content="#fcfbfe" />
+    <title>Playground · Stellar Check</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="/navigation-hero.css" />
+    <link rel="stylesheet" href="/playground.css" />
+  </head>
+  <body class="playground-page">
+    <svg class="icon-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6" /></symbol>
+        <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6" /></symbol>
+        <symbol id="i-code" viewBox="0 0 24 24">
+          <path d="m8 7-5 5 5 5m8-10 5 5-5 5m-5 2 2-14" />
+        </symbol>
+        <symbol id="i-shield" viewBox="0 0 24 24">
+          <path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z" />
+          <path d="m8 11 3 3 5-5" />
+        </symbol>
+        <symbol id="i-wallet" viewBox="0 0 24 24">
+          <path d="M20 8V6H5a2 2 0 0 1 0-4h13v4M3 4v14a2 2 0 0 0 2 2h15V8H3m17 4h-5v4h5" />
+        </symbol>
+        <symbol id="i-link" viewBox="0 0 24 24">
+          <path d="m10 8 3-3a5 5 0 0 1 7 7l-3 3M14 16l-3 3a5 5 0 0 1-7-7l3-3m1 9 8-8" />
+        </symbol>
+        <symbol id="i-note" viewBox="0 0 24 24">
+          <path d="M6 3h12v18H6zM9 8h6m-6 4h6m-6 4h3" />
+        </symbol>
+        <symbol id="i-copy" viewBox="0 0 24 24">
+          <rect x="8" y="8" width="12" height="12" rx="2" />
+          <path d="M16 8V4H4v12h4" />
+        </symbol>
+        <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></symbol>
+        <symbol id="i-globe" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9" />
+          <ellipse cx="12" cy="12" rx="4" ry="9" />
+          <path d="M3 12h18" />
+        </symbol>
+      </defs>
+    </svg>
+    <a class="skip-link" href="#playground">Skip to payment checker</a>
+    <header class="site-header">
+      <div class="container nav-inner">
+        <a class="brand" href="/" aria-label="Stellar Check home"
+          ><span class="brand-mark" aria-hidden="true"
+            ><svg viewBox="0 0 36 36">
+              <circle cx="18" cy="18" r="12" />
+              <path d="m12 18 4 4 8-9M5 27l4-4M27 9l4-4" /></svg></span
+          ><span
+            >stellar<span class="brand-period">check</span
+            ><span class="brand-sub">STELLAR PAYMENT READINESS</span></span
+          ></a
+        >
+        <nav class="desktop-nav" aria-label="Main navigation">
+          <a href="/">Home</a><a href="/playground.html" aria-current="page">Playground</a
+          ><a href="/docs.html">Docs <span aria-hidden="true">↗</span></a>
+        </nav>
+        <div class="nav-actions">
+          <button
+            class="theme-toggle"
+            id="theme-toggle"
+            type="button"
+            aria-label="Dark mode"
+            aria-pressed="false"
+            title="Switch to dark mode"
+          >
+            <svg class="icon theme-moon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5Z" />
+            </svg>
+            <svg class="icon theme-sun" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="4" />
+              <path
+                d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"
+              />
+            </svg>
+          </button>
+          <a class="button button-small button-primary nav-cta" href="/docs.html#example"
+            >Understand a report <svg class="icon" aria-hidden="true"><use href="#i-arrow" /></svg
+          ></a>
+          <button
+            class="menu-toggle"
+            id="menu-toggle"
+            aria-expanded="false"
+            aria-controls="mobile-nav"
+            aria-label="Open navigation"
+          >
+            <span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <nav id="mobile-nav" class="mobile-nav" aria-label="Mobile navigation" hidden>
+        <a href="/">Home</a><a href="/playground.html" aria-current="page">Playground</a
+        ><a href="/docs.html">Docs</a>
+      </nav>
+    </header>
+    <main>
+      <section id="playground" class="playground-section" aria-labelledby="playground-title" tabindex="-1">
+        <div class="container">
+          <div class="section-heading playground-heading">
+            <div>
+              <p class="eyebrow">THE STELLAR CHECK PLAYGROUND</p>
+              <h1 id="playground-title">Your payment,<br /><span>in perspective.</span></h1>
+              <p>Start with a sample. See what needs attention.<br class="desktop-break" /> Then check your own public accounts.</p>
+            </div>
+            <div class="mode-switch" role="group" aria-label="Data source">
+              <button type="button" data-mode="fixture" aria-pressed="true">Sample data</button
+              ><button type="button" data-mode="live" aria-pressed="false">
+                <span class="status-dot"></span> Live Horizon
+              </button>
+            </div>
+          </div>
+          <details class="xdr-import" id="xdr-import">
+            <summary><span class="xdr-import-icon" aria-hidden="true">{ }</span><span><strong>Already have a transaction?</strong><small>Paste unsigned XDR to fill the payment details.</small></span><span class="xdr-open-label">Import XDR <span aria-hidden="true">+</span></span></summary>
+            <div class="xdr-import-content">
+              <form id="xdr-form">
+                <div class="field"><label for="xdr-network">Transaction network</label><select id="xdr-network"><option value="testnet">Stellar Testnet</option><option value="public">Stellar Public Network</option></select></div>
+                <p class="xdr-note" id="xdr-network-note">Choose the network used to build this transaction. XDR does not contain its network identifier.</p>
+                <div class="field"><label for="xdr-input">Unsigned transaction XDR</label><textarea id="xdr-input" rows="4" maxlength="32768" required spellcheck="false" autocomplete="off" aria-describedby="xdr-network-note xdr-feedback" placeholder="Paste a base64 transaction envelope…"></textarea></div>
+                <div class="xdr-actions"><button class="button button-primary" type="submit">Decode payment</button><button class="button button-outline" id="xdr-example" type="button">Try example XDR</button></div>
+                <p class="xdr-note">Decoded locally. One classic payment between distinct G accounts. No signing or submission.</p>
+                <p id="xdr-feedback" class="xdr-feedback" role="status"></p>
+              </form>
+              <section id="xdr-preview" class="xdr-preview" aria-label="Decoded payment preview" hidden></section>
+            </div>
+          </details>
+          <div id="scenario-field" class="scenario-bar">
+            <span>TRY A SCENARIO</span>
+            <div class="scenario-options" role="group" aria-label="Example scenario">
+              <button type="button" data-scenario="xlm" aria-pressed="true">
+                XLM payment <span>↗</span></button
+              ><button type="button" data-scenario="credit" aria-pressed="false">
+                Issued asset <span>↗</span></button
+              ><button type="button" data-scenario="trustline" aria-pressed="false">
+                Missing trustline <span>↗</span></button
+              ><button type="button" data-scenario="funds" aria-pressed="false">
+                Insufficient funds <span>↗</span>
+              </button>
+            </div>
+          </div>
+          <div class="workspace">
+            <section class="form-panel" aria-labelledby="payment-heading">
+              <div class="panel-heading">
+                <div>
+                  <span class="panel-index">01</span>
+                  <h2 id="payment-heading" tabindex="-1">Payment details</h2>
+                </div>
+                <span class="small-muted">Read only</span>
+              </div>
+              <form id="payment-form">
+                <p id="imported-notice" class="imported-notice" role="status" hidden>Imported payment values. Edits affect this form only. The original XDR is unchanged; sequence and time bounds are not checked.</p>
+                <select id="mode" hidden aria-label="Data source selection">
+                  <option value="fixture">Sample data</option>
+                  <option value="live">Live Horizon</option></select
+                ><select id="scenario" hidden aria-label="Scenario selection">
+                  <option value="xlm">XLM payment</option>
+                  <option value="credit">Issued asset</option>
+                  <option value="trustline">Missing trustline</option>
+                  <option value="funds">Insufficient funds</option>
+                </select>
+                <p id="mode-hint" class="form-notice">
+                  <span class="status-dot"></span> Controlled sample accounts. No network requests.
+                </p>
+                <div class="row">
+                  <div class="field">
+                    <label for="network">Network</label
+                    ><select id="network">
+                      <option value="testnet">Stellar Testnet</option>
+                      <option value="public">Stellar Public Network</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="asset">Asset</label
+                    ><select id="asset">
+                      <option value="native">XLM (native)</option>
+                      <option value="credit">Issued asset</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="field" id="horizon-field" hidden>
+                  <label for="horizon">Horizon provider URL</label
+                  ><input
+                    id="horizon"
+                    type="url"
+                    value="https://horizon-testnet.stellar.org"
+                    spellcheck="false"
+                  />
+                </div>
+                <div class="account-fields">
+                  <div class="field">
+                    <label for="source"><span class="field-dot"></span> Sender public address</label
+                    ><input
+                      id="source"
+                      required
+                      placeholder="G…"
+                      spellcheck="false"
+                      autocomplete="off"
+                    />
+                  </div>
+                  <div class="field">
+                    <label for="destination"
+                      ><span class="field-dot destination-dot"></span> Recipient public
+                      address</label
+                    ><input
+                      id="destination"
+                      required
+                      placeholder="G…"
+                      spellcheck="false"
+                      autocomplete="off"
+                    />
+                  </div>
+                </div>
+                <div id="credit-fields" hidden>
+                  <div class="field">
+                    <label for="code">Asset code</label
+                    ><input id="code" value="USD" maxlength="12" spellcheck="false" />
+                  </div>
+                  <div class="field">
+                    <label for="issuer">Asset issuer public address</label
+                    ><input id="issuer" placeholder="G…" spellcheck="false" />
+                  </div>
+                </div>
+                <div class="field amount-field">
+                  <label for="amount">Payment amount</label>
+                  <div class="amount-input">
+                    <input
+                      id="amount"
+                      required
+                      inputmode="decimal"
+                      value="1"
+                      autocomplete="off"
+                    /><span id="amount-unit">XLM</span>
+                  </div>
+                </div>
+                <details class="advanced-settings" id="advanced-settings">
+                  <summary>
+                    Fee & memo
+                    <span
+                      >Optional settings
+                      <svg class="icon" aria-hidden="true"><use href="#i-plus" /></svg
+                    ></span>
+                  </summary>
+                  <div class="advanced-content">
+                    <div class="field">
+                      <label for="fee">Total fee budget · XLM</label
+                      ><input
+                        id="fee"
+                        required
+                        inputmode="decimal"
+                        value="0.00001"
+                        autocomplete="off"
+                      />
+                    </div>
+                    <div class="row">
+                      <div class="field">
+                        <label for="memo-type">Memo type</label
+                        ><select id="memo-type">
+                          <option value="none">No memo</option>
+                          <option value="text">Text</option>
+                          <option value="id">ID</option>
+                          <option value="hash">Hash</option>
+                          <option value="return">Return hash</option>
+                        </select>
+                      </div>
+                      <div class="field">
+                        <label for="memo">Memo value</label
+                        ><input id="memo" disabled autocomplete="off" placeholder="Optional" />
+                      </div>
+                    </div>
+                  </div>
+                </details>
+                <button class="button button-primary check-button" id="check" type="submit">
+                  <svg class="icon" aria-hidden="true"><use href="#i-shield" /></svg
+                  ><span id="check-label">Check payment</span
+                  ><svg class="icon" aria-hidden="true"><use href="#i-arrow" /></svg>
+                </button>
+                <p class="form-footnote">Public data only. Your funds stay where they are.</p>
+              </form>
+            </section>
+            <section class="report-panel" aria-labelledby="report-heading">
+              <div class="panel-heading">
+                <div>
+                  <span class="panel-index">02</span>
+                  <h2 id="report-heading">Readiness report</h2>
+                </div>
+                <span id="report-mode" class="sample-tag">SAMPLE DATA</span>
+              </div>
+              <div class="report-toolbar">
+                <div class="report-tabs" role="tablist" aria-label="Report view">
+                  <button
+                    id="summary-tab"
+                    role="tab"
+                    aria-selected="true"
+                    aria-controls="report"
+                    tabindex="0"
+                  >
+                    Overview</button
+                  ><button
+                    id="json-tab"
+                    role="tab"
+                    aria-selected="false"
+                    aria-controls="json-panel"
+                    tabindex="-1"
+                  >
+                    JSON
+                  </button>
+                </div>
+                <button
+                  id="copy-report"
+                  class="icon-button"
+                  type="button"
+                  aria-label="Copy JSON report"
+                  title="Copy JSON report"
+                >
+                  <svg class="icon" aria-hidden="true"><use href="#i-copy" /></svg
+                  ><span id="copy-report-label">Copy report</span>
+                </button>
+              </div>
+              <div
+                id="report"
+                role="tabpanel"
+                aria-labelledby="summary-tab"
+                aria-live="polite"
+                aria-atomic="true"
+                tabindex="0"
+              ></div>
+              <div id="json-panel" role="tabpanel" aria-labelledby="json-tab" hidden tabindex="0">
+                <pre id="report-json"></pre>
+              </div>
+              <span id="copy-feedback" class="sr-only" role="status"></span>
+              <div class="boundary">
+                <svg class="icon" aria-hidden="true"><use href="#i-shield" /></svg>
+                <p>
+                  <strong>An observation, not a guarantee.</strong> State can change. Refresh before
+                  confirmation. Signatures, sequence numbers and inclusion are outside this check.
+                </p>
+              </div>
+            </section>
+          </div>
+          <p class="playground-note">
+            <svg class="icon" aria-hidden="true"><use href="#i-globe" /></svg> Live checks share the
+            entered public addresses with your selected Horizon provider.
+          </p>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer container">
+      <a class="brand footer-brand" href="/"
+        ><span class="brand-mark" aria-hidden="true"
+          ><svg viewBox="0 0 36 36">
+            <circle cx="18" cy="18" r="12" />
+            <path d="m12 18 4 4 8-9M5 27l4-4M27 9l4-4" /></svg></span
+        ><span
+          >stellar<span class="brand-period">check</span
+          ><span class="brand-sub">STELLAR PAYMENT READINESS</span></span
+        ></a
+      ><span class="footer-note">Know more. Before you send.</span>
+      <nav aria-label="Footer navigation">
+        <a href="/">Home</a><a href="/#developers">Developers</a
+        ><a href="/docs.html">Docs</a><a href="/#faq-title">FAQs</a>
+      </nav>
+    </footer>
+    <script type="module" src="/main.ts"></script>
+  </body>
+</html>

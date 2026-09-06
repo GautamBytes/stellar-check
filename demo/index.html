@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Understand what could stop a Stellar payment before signing. Check balances, reserves, trustlines, capacity and memo requirements with an open-source TypeScript library."
+    />
+    <meta name="theme-color" content="#fcfbfe" />
+    <title>Stellar Check · Know before you send</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="/navigation-hero.css" />
+    <link rel="stylesheet" href="/reading.css" />
+  </head>
+  <body>
+    <svg class="icon-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6" /></symbol>
+        <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6" /></symbol>
+        <symbol id="i-code" viewBox="0 0 24 24">
+          <path d="m8 7-5 5 5 5m8-10 5 5-5 5m-5 2 2-14" />
+        </symbol>
+        <symbol id="i-shield" viewBox="0 0 24 24">
+          <path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z" />
+          <path d="m8 11 3 3 5-5" />
+        </symbol>
+        <symbol id="i-wallet" viewBox="0 0 24 24">
+          <path d="M20 8V6H5a2 2 0 0 1 0-4h13v4M3 4v14a2 2 0 0 0 2 2h15V8H3m17 4h-5v4h5" />
+        </symbol>
+        <symbol id="i-link" viewBox="0 0 24 24">
+          <path d="m10 8 3-3a5 5 0 0 1 7 7l-3 3M14 16l-3 3a5 5 0 0 1-7-7l3-3m1 9 8-8" />
+        </symbol>
+        <symbol id="i-note" viewBox="0 0 24 24">
+          <path d="M6 3h12v18H6zM9 8h6m-6 4h6m-6 4h3" />
+        </symbol>
+        <symbol id="i-copy" viewBox="0 0 24 24">
+          <rect x="8" y="8" width="12" height="12" rx="2" />
+          <path d="M16 8V4H4v12h4" />
+        </symbol>
+        <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" /></symbol>
+        <symbol id="i-globe" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9" />
+          <ellipse cx="12" cy="12" rx="4" ry="9" />
+          <path d="M3 12h18" />
+        </symbol>
+      </defs>
+    </svg>
+    <a class="skip-link" href="#top">Skip to main content</a>
+    <header class="site-header">
+      <div class="container nav-inner">
+        <a class="brand" href="#top" aria-label="Stellar Check home"
+          ><span class="brand-mark" aria-hidden="true"
+            ><svg viewBox="0 0 36 36">
+              <circle cx="18" cy="18" r="12" />
+              <path d="m12 18 4 4 8-9M5 27l4-4M27 9l4-4" /></svg></span
+          ><span
+            >stellar<span class="brand-period">check</span
+            ><span class="brand-sub">STELLAR PAYMENT READINESS</span></span
+          ></a
+        >
+        <nav class="desktop-nav" aria-label="Main navigation">
+          <a href="#why">Why Stellar Check</a><a href="/playground.html">Playground</a
+          ><a href="/docs.html">Docs <span aria-hidden="true">↗</span></a>
+        </nav>
+        <div class="nav-actions">
+          <button
+            class="theme-toggle"
+            id="theme-toggle"
+            type="button"
+            aria-label="Dark mode"
+            aria-pressed="false"
+            title="Switch to dark mode"
+          >
+            <svg class="icon theme-moon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M20 14.5A8.5 8.5 0 0 1 9.5 4 8.5 8.5 0 1 0 20 14.5Z" />
+            </svg>
+            <svg class="icon theme-sun" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="4" />
+              <path
+                d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"
+              />
+            </svg>
+          </button>
+          <a class="button button-small button-primary nav-cta" href="/playground.html"
+            >Check a payment <svg class="icon" aria-hidden="true"><use href="#i-arrow" /></svg
+          ></a>
+          <button
+            class="menu-toggle"
+            id="menu-toggle"
+            aria-expanded="false"
+            aria-controls="mobile-nav"
+            aria-label="Open navigation"
+          >
+            <span></span><span></span>
+          </button>
+        </div>
+      </div>
+      <nav id="mobile-nav" class="mobile-nav" aria-label="Mobile navigation" hidden>
+        <a href="#why">Why Stellar Check</a><a href="/playground.html">Playground</a
+        ><a href="/docs.html">Docs</a>
+      </nav>
+    </header>
+    <main id="top" tabindex="-1">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy container">
+          <a class="release-badge" href="#developers"
+            ><span class="release-symbol">✧</span> MEET STELLAR CHECK
+            <span class="badge-divider"></span> Built for Stellar
+            <span aria-hidden="true">↗</span></a
+          >
+          <div class="hero-satellites" aria-hidden="true">
+            <div class="satellite satellite-xlm">
+              <div class="asset-coin">
+                <svg viewBox="0 0 36 36">
+                  <circle cx="18" cy="18" r="10" />
+                  <path d="M4 24 30 9M6 28 32 13" />
+                </svg>
+              </div>
+              <span>XLM</span>
+            </div>
+            <div class="satellite satellite-usd">
+              <div class="asset-coin">$<span>USD</span></div>
+            </div>
+            <div class="satellite satellite-trust">
+              <svg class="icon"><use href="#i-link" /></svg><span>Trustline checks</span
+              ><span class="satellite-tick">✓</span>
+            </div>
+            <div class="satellite satellite-memo">
+              <svg class="icon"><use href="#i-note" /></svg><span>Every detail counts.</span>
+            </div>
+            <svg class="hero-doodle doodle-left" viewBox="0 0 110 70">
+              <path d="M5 10c55 0 85 8 62 29-18 15-43-16-10-16 18 0 28 20 38 38m-14-5 14 5 3-15" />
+            </svg>
+            <svg class="hero-doodle doodle-right" viewBox="0 0 50 50">
+              <path d="M25 3v44M3 25h44M9 9l32 32M9 41 41 9" />
+            </svg>
+          </div>
+          <h1 id="hero-title">Know more.<br /><span>Before you send.</span></h1>
+          <p class="hero-description">
+            A clearer view of every Stellar payment. Check balances, trustlines<br
+              class="desktop-break"
+            />
+            and the details that matter, before asking for a signature.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="/playground.html"
+              >Check a payment <svg class="icon" aria-hidden="true"><use href="#i-arrow" /></svg></a
+            ><a class="button button-light" href="#developers"
+              ><svg class="icon" aria-hidden="true"><use href="#i-code" /></svg> Explore the SDK</a
+            >
+          </div>
+          <p class="hero-microcopy">No wallet connection. No signing. Just useful answers.</p>
+        </div>
+        <div class="hero-stage container">
+          <img
+            class="hero-art"
+            src="/stellar-check-gates.png"
+            width="1536"
+            height="1024"
+            fetchpriority="high"
+            alt=""
+          />
+          <div class="stage-topline">
+            <span><span class="status-dot"></span> CLARITY, FROM SOURCE TO DESTINATION</span
+            ><button
+              class="motion-toggle"
+              id="motion-toggle"
+              type="button"
+              aria-label="Pause hero motion"
+              aria-pressed="false"
+              title="Pause hero motion"
+            >
+              <svg class="icon motion-pause" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M9 5v14M15 5v14" /></svg
+              ><svg class="icon motion-play" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m8 5 11 7-11 7Z" />
+              </svg>
+            </button>
+          </div>
+          <div class="hero-card" aria-label="Interactive sample payment report">
+            <div class="hero-card-top">
+              <span class="eyebrow">STELLAR CHECK REPORT</span
+              ><span class="sample-tag">SAMPLE DATA</span>
+            </div>
+            <div class="hero-payment">
+              <span class="asset-orb" aria-hidden="true">↗</span>
+              <div>
+                <span id="hero-amount">1.00 <small>XLM</small></span>
+                <p>Classic payment · Testnet</p>
+              </div>
+              <span class="report-orbit" aria-hidden="true">✧</span>
+            </div>
+            <div id="hero-status" class="hero-status" aria-live="polite">
+              <span class="round-check">✓</span>
+              <div>
+                <strong>No known issues</strong><span>Clear in the observed account data.</span>
+              </div>
+            </div>
+            <div class="hero-checks">
+              <div>
+                <span>Available funds</span
+                ><span class="hero-result" id="hero-funds">8.49999 XLM <i>✓</i></span>
+              </div>
+              <div>
+                <span>Recipient account</span><span class="hero-result">Exists <i>✓</i></span>
+              </div>
+              <div>
+                <span id="hero-check-label">Memo requirement</span
+                ><span class="hero-result" id="hero-check-result">Not declared <i>✓</i></span>
+              </div>
+            </div>
+            <div class="hero-card-footer">
+              <svg class="icon" aria-hidden="true"><use href="#i-shield" /></svg
+              ><span>Your signature stays with you.</span
+              ><span class="report-count">3 CHECKS SHOWN</span>
+            </div>
+          </div>
+          <div class="glass-label gate-label">
+            <span class="mini-spark">✧</span>
+            <div>One step before send.<span>A whole lot more context.</span></div>
+          </div>
+          <div class="glass-label route-label" aria-hidden="true">
+            <span>source</span><span class="payment-lane"><i class="payment-packet"></i></span
+            ><span class="route-check">✓</span
+            ><span class="payment-lane lane-after"><i class="payment-packet"></i></span
+            ><span>readiness report</span>
+          </div>
+          <div class="stage-bottom">
+            <div class="hero-switch" aria-label="Sample report scenario">
+              <button type="button" data-hero="xlm" aria-pressed="true">
+                <span class="status-dot"></span> Ready to check</button
+              ><button type="button" data-hero="trustline" aria-pressed="false">
+                <span class="status-dot amber"></span> Catch an issue
+              </button>
+            </div>
+            <p class="hero-caption">Try a sample. See what changes.</p>
+          </div>
+        </div>
+      </section>
+      <div class="principles-strip">
+        <div class="container principles-inner">
+          <span class="principles-label">BUILT FOR THE DETAILS.<br />DESIGNED FOR DEVELOPERS.</span
+          ><span
+            ><svg class="icon" aria-hidden="true"><use href="#i-wallet" /></svg> XLM & issued
+            assets</span
+          ><span
+            ><svg class="icon" aria-hidden="true"><use href="#i-globe" /></svg> Explicit network
+            checks</span
+          ><span
+            ><svg class="icon" aria-hidden="true"><use href="#i-code" /></svg> TypeScript, end to
+            end</span
+          ><span
+            ><svg class="icon" aria-hidden="true"><use href="#i-shield" /></svg> Apache-2.0
+            licensed</span
+          >
+        </div>
+      </div>
+      <section class="why-section container" id="why" aria-labelledby="why-title">
+        <div class="why-copy">
+          <p class="eyebrow">WHY STELLAR CHECK</p>
+          <h2 id="why-title">A payment needs more than a send button.</h2>
+          <p>
+            The amount looks right. The address looks right. But can the recipient receive this
+            asset? And how much can the sender actually spend?
+          </p>
+          <p>
+            Stellar Check brings those details into one readable report, before your application
+            asks for a signature.
+          </p>
+          <a class="text-link" href="/docs.html"
+            >Understand the thinking
+            <svg class="icon" aria-hidden="true"><use href="#i-arrow" /></svg
+          ></a>
+        </div>
+        <div class="why-example">
+          <div class="why-example-heading">
+            <span class="eyebrow">ONE DETAIL. A CLEARER NEXT STEP.</span
+            ><span class="sample-tag">SAMPLE</span>
+          </div>
+          <div class="why-payment">
+            <span class="why-token">$</span>
+            <div><strong>Send 1 USD</strong><span>An issued asset on Stellar Testnet</span></div>
+            <svg class="icon" aria-hidden="true"><use href="#i-arrow" /></svg>
+          </div>
+          <div class="why-diagnosis">
+            <span aria-hidden="true">!</span>
+            <div>
+              <strong>The recipient needs a trustline.</strong>
+              <p>
+                The asset code and issuer must match. The recipient can establish the correct
+                trustline, then you can check again.
+              </p>
+            </div>
+          </div>
+          <a href="/playground.html?scenario=trustline"
+            >Explore this example <span aria-hidden="true">↗</span></a
+          >
+        </div>
+      </section>
+      <section id="checks" class="section container" aria-labelledby="checks-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">THE BIG PICTURE, IN THE SMALL DETAILS</p>
+            <h2 id="checks-title">
+              Everything you need to know.<br /><span class="muted-heading"
+                >Before the next step.</span
+              >
+            </h2>
+          </div>
+          <p>The amount. The account. The asset.<br />Bring it all into focus with one report.</p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <div class="feature-art funds-art" aria-hidden="true">
+              <div class="mini-balance">
+                <span>10.00 <small>XLM</small></span>
+                <div class="mini-bar"><i></i><i></i></div>
+                <div class="mini-legend"><span>Available</span><span>Reserved</span></div>
+              </div>
+              <span class="floating-icon"
+                ><svg class="icon" aria-hidden="true"><use href="#i-wallet" /></svg
+              ></span>
+            </div>
+            <h3>Know what’s actually available.</h3>
+            <p>
+              Account for reserves, sponsorship, open offers and your planned fee before choosing an
+              amount.
+            </p>
+            <span class="feature-label">BALANCES & RESERVES</span>
+          </article>
+          <article class="feature-card">
+            <div class="feature-art trust-art" aria-hidden="true">
+              <div class="asset-token">USD<span class="tiny-dot"></span></div>
+              <div class="connection-line"><span>✓</span></div>
+              <div class="receiver-token">
+                <svg class="icon" aria-hidden="true"><use href="#i-wallet" /></svg>
+              </div>
+              <span class="art-annotation">Right asset. Right issuer.</span>
+            </div>
+            <h3>Make sure it can be received.</h3>
+            <p>
+              Check the exact trustline, authorization and remaining capacity on the recipient’s
+              account.
+            </p>
+            <span class="feature-label">TRUSTLINES & CAPACITY</span>
+          </article>
+          <article class="feature-card">
+            <div class="feature-art memo-art" aria-hidden="true">
+              <div class="memo-note">
+                <span>PAYMENT MEMO <i></i></span><strong>customer-2048<span>│</span></strong>
+              </div>
+              <span class="floating-icon"
+                ><svg class="icon" aria-hidden="true"><use href="#i-note" /></svg
+              ></span>
+            </div>
+            <h3>Catch the easy-to-miss details.</h3>
+            <p>
+              Spot a declared memo requirement or network mismatch, and see who needs to take
+              action.
+            </p>
+            <span class="feature-label">MEMOS & NETWORK</span>
+          </article>
+        </div>
+      </section>
+      <section
+        id="developers"
+        class="section container developer-section"
+        aria-labelledby="developers-title"
+      >
+        <div class="developer-copy">
+          <p class="eyebrow">A FEW LINES. A BETTER EXPERIENCE.</p>
+          <h2 id="developers-title">
+            Built to fit.<br /><span class="muted-heading">Ready to integrate.</span>
+          </h2>
+          <p>
+            One call before the signature request. Get structured diagnostics your application can
+            turn into useful guidance.
+          </p>
+          <ul class="developer-benefits">
+            <li>
+              <svg class="icon" aria-hidden="true"><use href="#i-check" /></svg> Stable codes, clear
+              actions, affected parties
+            </li>
+            <li>
+              <svg class="icon" aria-hidden="true"><use href="#i-check" /></svg> Exact amounts with
+              seven-decimal precision
+            </li>
+            <li>
+              <svg class="icon" aria-hidden="true"><use href="#i-check" /></svg> Works in Node and
+              browser bundlers
+            </li>
+          </ul>
+          <a class="text-link" href="#integration-notes"
+            >Integration details <svg class="icon" aria-hidden="true"><use href="#i-arrow" /></svg
+          ></a>
+        </div>
+        <div class="code-window">
+          <div class="code-window-header">
+            <span><span class="file-dot"></span> payment.ts</span
+            ><button
+              type="button"
+              id="copy-code"
+              class="code-copy"
+              aria-label="Copy integration example"
+            >
+              <svg class="icon" aria-hidden="true"><use href="#i-copy" /></svg><span>Copy</span>
+            </button>
+          </div>
+          <pre
+            id="integration-code"
+          ><code><span class="code-purple">import</span> { Networks } <span class="code-purple">from</span> <span class="code-green">'@stellar/stellar-sdk'</span>;
+<span class="code-purple">import</span> { checkPayment, HorizonProvider }
+  <span class="code-purple">from</span> <span class="code-green">'stellar-check'</span>;
+
+<span class="code-comment">// Check before asking for a signature.</span>
+<span class="code-purple">const</span> report = <span class="code-purple">await</span> <span class="code-blue">checkPayment</span>({
+  networkPassphrase: Networks.TESTNET,
+  source: senderPublicAddress,
+  destination: recipientPublicAddress,
+  asset: { type: <span class="code-green">'native'</span> },
+  amount: <span class="code-green">'2.5000000'</span>,
+  feeBudget: <span class="code-green">'0.0000100'</span>,
+}, <span class="code-purple">new</span> <span class="code-blue">HorizonProvider</span>(
+  <span class="code-green">'https://horizon-testnet.stellar.org'</span>
+));
+
+<span class="code-blue">console.log</span>(report.status, report.coverage);
+
+<span class="code-purple">for</span> (<span class="code-purple">const</span> issue <span class="code-purple">of</span> report.issues) {
+  <span class="code-blue">console.log</span>(issue.message, issue.action);
+}</code></pre>
+          <div class="code-window-footer">
+            <span class="status-dot"></span> Typed reports. Your application stays in control.
+          </div>
+        </div>
+        <div id="integration-notes" class="integration-notes">
+          <div>
+            <h3>Start with the local package.</h3>
+            <p>
+              v0.1.0 is available in this checkout. Build and pack it, then install the archive in
+              your application. The package is not yet on npm.
+            </p>
+            <code>npm run build &amp;&amp; npm pack</code>
+          </div>
+          <div>
+            <h3>A focused first release.</h3>
+            <p>
+              One classic payment between distinct G accounts. XLM or an issued asset, with the same
+              source and fee payer. Unsupported shapes return an explicit incomplete result.
+            </p>
+            <span class="local-version">LOCAL v0.1.0 <span>·</span> APACHE-2.0</span>
+          </div>
+        </div>
+      </section>
+      <section class="faq-section container" aria-labelledby="faq-title">
+        <div>
+          <p class="eyebrow">CLEAR ANSWERS</p>
+          <h2 id="faq-title">Good questions.<br />Honest answers.</h2>
+          <p>Useful checks start with honest limits.</p>
+        </div>
+        <div class="faq-list">
+          <details>
+            <summary>
+              Does this send or sign a payment?<svg class="icon" aria-hidden="true">
+                <use href="#i-plus" />
+              </svg>
+            </summary>
+            <p>
+              No. Stellar Check reads public account information and returns a report. Wallet
+              connection, signing and submission remain with your application.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Does “no known issues” guarantee success?<svg class="icon" aria-hidden="true">
+                <use href="#i-plus" />
+              </svg>
+            </summary>
+            <p>
+              No. The report describes supported checks against separate observations. Account state
+              can change immediately. Recheck before confirmation; signatures, sequence handling and
+              transaction inclusion are outside this tool’s scope.
+            </p>
+          </details>
+          <details>
+            <summary>
+              Which payments can I check?<svg class="icon" aria-hidden="true">
+                <use href="#i-plus" />
+              </svg>
+            </summary>
+            <p>
+              One ordinary Stellar payment between distinct G addresses, using native XLM or an
+              issued asset. Fee bumps, batches, path payments, Soroban, M addresses, self-payments
+              and payments involving an asset issuer as a party are not supported in this release.
+            </p>
+          </details>
+          <details>
+            <summary>
+              What does the memo check verify?<svg class="icon" aria-hidden="true">
+                <use href="#i-plus" />
+              </svg>
+            </summary>
+            <p>
+              The official Stellar SDK checks for a declared memo requirement. A supplied memo
+              satisfies a presence check only. Obtain the correct memo from the receiving service;
+              this tool cannot verify the intended customer’s identity.
+            </p>
+          </details>
+        </div>
+      </section>
+      <section class="closing-section container">
+        <div class="closing-mark" aria-hidden="true">↗</div>
+        <div>
+          <p class="eyebrow">BEFORE THE NEXT SIGNATURE</p>
+          <h2>Your next payment.<br /><span>Start with Stellar Check.</span></h2>
+        </div>
+        <a class="button button-primary" href="/playground.html"
+          >Check a payment <svg class="icon" aria-hidden="true"><use href="#i-arrow" /></svg
+        ></a>
+      </section>
+    </main>
+    <footer class="site-footer container">
+      <a class="brand footer-brand" href="#top"
+        ><span class="brand-mark" aria-hidden="true"
+          ><svg viewBox="0 0 36 36">
+            <circle cx="18" cy="18" r="12" />
+            <path d="m12 18 4 4 8-9M5 27l4-4M27 9l4-4" /></svg></span
+        ><span
+          >stellar<span class="brand-period">check</span
+          ><span class="brand-sub">STELLAR PAYMENT READINESS</span></span
+        ></a
+      ><span class="footer-note">Know more. Before you send.</span>
+      <nav aria-label="Footer navigation">
+        <a href="/playground.html">Playground</a><a href="#developers">Developers</a
+        ><a href="/docs.html">Docs</a><a href="#faq-title">FAQs</a>
+      </nav>
+    </footer>
+    <script type="module" src="/home.ts"></script>
+  </body>
+</html>
