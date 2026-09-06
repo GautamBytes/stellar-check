@@ -1,0 +1,431 @@
+{
+  "verifiedAt": "2026-09-06T11:07:48.011Z",
+  "provider": "https://horizon-testnet.stellar.org",
+  "transactionsSubmitted": 0,
+  "results": [
+    {
+      "name": "Valid XLM payment",
+      "payment": {
+        "source": "GDI2B6XK4RYUKTLU6QKXR24OO2YGI6T6FOF6FXYAWSVIAMSLHGO2XR47",
+        "destination": "GAATQZ4FLF35QHNUREDB52YUDB5KLPFI7DWKXORCDRMOPR7X367BR67Z",
+        "networkPassphrase": "Test SDF Network ; September 2015",
+        "asset": {
+          "type": "native"
+        },
+        "amount": "0.0000001",
+        "feeBudget": "0.0000100"
+      },
+      "expected": "no_known_issues",
+      "passed": true,
+      "report": {
+        "status": "no_known_issues",
+        "issues": [],
+        "facts": {
+          "baseReserve": "0.5000000",
+          "baseFee": "0.0000100",
+          "feeBudget": "0.0000100",
+          "sourceReserve": "1.0000000",
+          "sourceXlmBalance": "9921.9999700",
+          "nativeSellingLiabilities": "0.0000000",
+          "availableXlm": "9920.9999600",
+          "requiredXlm": "1.0000101",
+          "xlmShortfall": "0.0000000",
+          "receivingCapacity": "922337193607.4775807",
+          "memo": "not_required"
+        },
+        "coverage": [
+          {
+            "check": "input",
+            "status": "complete"
+          },
+          {
+            "check": "network",
+            "status": "complete"
+          },
+          {
+            "check": "source_account",
+            "status": "complete"
+          },
+          {
+            "check": "destination_account",
+            "status": "complete"
+          },
+          {
+            "check": "source_xlm",
+            "status": "complete"
+          },
+          {
+            "check": "source_asset",
+            "status": "not_applicable",
+            "reason": "Native funds are covered by source_xlm."
+          },
+          {
+            "check": "destination_capacity",
+            "status": "complete"
+          },
+          {
+            "check": "memo",
+            "status": "complete"
+          }
+        ],
+        "observation": {
+          "networkPassphrase": "Test SDF Network ; September 2015",
+          "reads": [
+            {
+              "check": "network",
+              "observedAt": "2026-09-06T11:07:44.823Z",
+              "ledger": 4533855
+            },
+            {
+              "check": "source",
+              "observedAt": "2026-09-06T11:07:45.066Z"
+            },
+            {
+              "check": "destination",
+              "observedAt": "2026-09-06T11:07:45.787Z"
+            },
+            {
+              "check": "memo",
+              "observedAt": "2026-09-06T11:07:45.794Z"
+            }
+          ],
+          "atomic": false,
+          "sourceLastModifiedLedger": 4533796,
+          "destinationLastModifiedLedger": 4533796,
+          "provider": "https://horizon-testnet.stellar.org",
+          "startedAt": "2026-09-06T11:07:44.346Z",
+          "finishedAt": "2026-09-06T11:07:45.796Z"
+        },
+        "limitations": [
+          "Separate reads are not an atomic snapshot. Refresh before confirmation and whenever the payment changes.",
+          "No supported issue found in observed data does not guarantee transaction success.",
+          "Signatures, sequence numbers, submission, finality and surge-fee inclusion are not assessed.",
+          "Memo checks establish a declared requirement or memo presence, never the intended customer’s identity."
+        ]
+      }
+    },
+    {
+      "name": "Valid issued-asset payment",
+      "payment": {
+        "source": "GAPK4UCVAEYAQFOBN3P7UNCHGFDFI3PBXZFK5VJFRRVWOIERECV6FVCR",
+        "destination": "GBOE5ZMMNVY4MXEK6MUKOHGBXUQE7GHGETKDHDE2C2GRMDMYQORD2TWT",
+        "networkPassphrase": "Test SDF Network ; September 2015",
+        "asset": {
+          "type": "credit",
+          "code": "USDC",
+          "issuer": "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5"
+        },
+        "amount": "0.0000001",
+        "feeBudget": "0.0000100"
+      },
+      "expected": "no_known_issues",
+      "passed": true,
+      "report": {
+        "status": "no_known_issues",
+        "issues": [],
+        "facts": {
+          "baseReserve": "0.5000000",
+          "baseFee": "0.0000100",
+          "feeBudget": "0.0000100",
+          "sourceReserve": "1.5000000",
+          "sourceXlmBalance": "1950.6011593",
+          "nativeSellingLiabilities": "0.0000000",
+          "availableXlm": "1949.1011493",
+          "requiredXlm": "1.5000100",
+          "xlmShortfall": "0.0000000",
+          "availableAsset": "5046.6570315",
+          "assetShortfall": "0.0000000",
+          "receivingCapacity": "922337203680.4775807",
+          "capacityShortfall": "0.0000000",
+          "memo": "not_required"
+        },
+        "coverage": [
+          {
+            "check": "input",
+            "status": "complete"
+          },
+          {
+            "check": "network",
+            "status": "complete"
+          },
+          {
+            "check": "source_account",
+            "status": "complete"
+          },
+          {
+            "check": "destination_account",
+            "status": "complete"
+          },
+          {
+            "check": "source_xlm",
+            "status": "complete"
+          },
+          {
+            "check": "source_asset",
+            "status": "complete"
+          },
+          {
+            "check": "destination_capacity",
+            "status": "complete"
+          },
+          {
+            "check": "memo",
+            "status": "complete"
+          }
+        ],
+        "observation": {
+          "networkPassphrase": "Test SDF Network ; September 2015",
+          "reads": [
+            {
+              "check": "network",
+              "observedAt": "2026-09-06T11:07:46.275Z",
+              "ledger": 4533855
+            },
+            {
+              "check": "source",
+              "observedAt": "2026-09-06T11:07:46.530Z"
+            },
+            {
+              "check": "destination",
+              "observedAt": "2026-09-06T11:07:46.530Z"
+            },
+            {
+              "check": "memo",
+              "observedAt": "2026-09-06T11:07:46.535Z"
+            }
+          ],
+          "atomic": false,
+          "sourceLastModifiedLedger": 4533827,
+          "destinationLastModifiedLedger": 4533796,
+          "provider": "https://horizon-testnet.stellar.org",
+          "startedAt": "2026-09-06T11:07:45.796Z",
+          "finishedAt": "2026-09-06T11:07:46.535Z"
+        },
+        "limitations": [
+          "Separate reads are not an atomic snapshot. Refresh before confirmation and whenever the payment changes.",
+          "No supported issue found in observed data does not guarantee transaction success.",
+          "Signatures, sequence numbers, submission, finality and surge-fee inclusion are not assessed.",
+          "Memo checks establish a declared requirement or memo presence, never the intended customer’s identity."
+        ]
+      }
+    },
+    {
+      "name": "Missing recipient trustline",
+      "payment": {
+        "source": "GAPK4UCVAEYAQFOBN3P7UNCHGFDFI3PBXZFK5VJFRRVWOIERECV6FVCR",
+        "destination": "GAATQZ4FLF35QHNUREDB52YUDB5KLPFI7DWKXORCDRMOPR7X367BR67Z",
+        "networkPassphrase": "Test SDF Network ; September 2015",
+        "asset": {
+          "type": "credit",
+          "code": "USDC",
+          "issuer": "GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5"
+        },
+        "amount": "0.0000001",
+        "feeBudget": "0.0000100"
+      },
+      "expected": "DESTINATION_TRUSTLINE_MISSING",
+      "passed": true,
+      "report": {
+        "status": "issues_found",
+        "issues": [
+          {
+            "code": "DESTINATION_TRUSTLINE_MISSING",
+            "party": "recipient",
+            "message": "The recipient has no trustline for this exact asset code and issuer.",
+            "action": "The recipient needs to create a trustline for USDC issued by GBBD47IF6LWK7P7MDEVSCWR7DPUWV3NY3DTQEVFL4NAT4AQH3ZLLFLA5."
+          }
+        ],
+        "facts": {
+          "baseReserve": "0.5000000",
+          "baseFee": "0.0000100",
+          "feeBudget": "0.0000100",
+          "sourceReserve": "1.5000000",
+          "sourceXlmBalance": "1950.6011593",
+          "nativeSellingLiabilities": "0.0000000",
+          "availableXlm": "1949.1011493",
+          "requiredXlm": "1.5000100",
+          "xlmShortfall": "0.0000000",
+          "availableAsset": "5046.6570315",
+          "assetShortfall": "0.0000000",
+          "memo": "not_required"
+        },
+        "coverage": [
+          {
+            "check": "input",
+            "status": "complete"
+          },
+          {
+            "check": "network",
+            "status": "complete"
+          },
+          {
+            "check": "source_account",
+            "status": "complete"
+          },
+          {
+            "check": "destination_account",
+            "status": "complete"
+          },
+          {
+            "check": "source_xlm",
+            "status": "complete"
+          },
+          {
+            "check": "source_asset",
+            "status": "complete"
+          },
+          {
+            "check": "destination_capacity",
+            "status": "complete"
+          },
+          {
+            "check": "memo",
+            "status": "complete"
+          }
+        ],
+        "observation": {
+          "networkPassphrase": "Test SDF Network ; September 2015",
+          "reads": [
+            {
+              "check": "network",
+              "observedAt": "2026-09-06T11:07:47.020Z",
+              "ledger": 4533855
+            },
+            {
+              "check": "source",
+              "observedAt": "2026-09-06T11:07:47.277Z"
+            },
+            {
+              "check": "destination",
+              "observedAt": "2026-09-06T11:07:47.263Z"
+            },
+            {
+              "check": "memo",
+              "observedAt": "2026-09-06T11:07:47.278Z"
+            }
+          ],
+          "atomic": false,
+          "sourceLastModifiedLedger": 4533827,
+          "destinationLastModifiedLedger": 4533796,
+          "provider": "https://horizon-testnet.stellar.org",
+          "startedAt": "2026-09-06T11:07:46.535Z",
+          "finishedAt": "2026-09-06T11:07:47.280Z"
+        },
+        "limitations": [
+          "Separate reads are not an atomic snapshot. Refresh before confirmation and whenever the payment changes.",
+          "No supported issue found in observed data does not guarantee transaction success.",
+          "Signatures, sequence numbers, submission, finality and surge-fee inclusion are not assessed.",
+          "Memo checks establish a declared requirement or memo presence, never the intended customer’s identity."
+        ]
+      }
+    },
+    {
+      "name": "Insufficient source availability",
+      "payment": {
+        "source": "GDI2B6XK4RYUKTLU6QKXR24OO2YGI6T6FOF6FXYAWSVIAMSLHGO2XR47",
+        "destination": "GAATQZ4FLF35QHNUREDB52YUDB5KLPFI7DWKXORCDRMOPR7X367BR67Z",
+        "networkPassphrase": "Test SDF Network ; September 2015",
+        "asset": {
+          "type": "native"
+        },
+        "amount": "9921.9999701",
+        "feeBudget": "0.0000100"
+      },
+      "expected": "INSUFFICIENT_XLM",
+      "passed": true,
+      "report": {
+        "status": "issues_found",
+        "issues": [
+          {
+            "code": "INSUFFICIENT_XLM",
+            "party": "sender",
+            "message": "The sender lacks XLM for the payment, required reserves, selling liabilities and planned fee.",
+            "action": "Reduce the XLM payment, add XLM, or review reserve entries and open offers, then check again."
+          }
+        ],
+        "facts": {
+          "baseReserve": "0.5000000",
+          "baseFee": "0.0000100",
+          "feeBudget": "0.0000100",
+          "sourceReserve": "1.0000000",
+          "sourceXlmBalance": "9921.9999700",
+          "nativeSellingLiabilities": "0.0000000",
+          "availableXlm": "9920.9999600",
+          "requiredXlm": "9922.9999801",
+          "xlmShortfall": "1.0000101",
+          "receivingCapacity": "922337193607.4775807",
+          "memo": "not_required"
+        },
+        "coverage": [
+          {
+            "check": "input",
+            "status": "complete"
+          },
+          {
+            "check": "network",
+            "status": "complete"
+          },
+          {
+            "check": "source_account",
+            "status": "complete"
+          },
+          {
+            "check": "destination_account",
+            "status": "complete"
+          },
+          {
+            "check": "source_xlm",
+            "status": "complete"
+          },
+          {
+            "check": "source_asset",
+            "status": "not_applicable",
+            "reason": "Native funds are covered by source_xlm."
+          },
+          {
+            "check": "destination_capacity",
+            "status": "complete"
+          },
+          {
+            "check": "memo",
+            "status": "complete"
+          }
+        ],
+        "observation": {
+          "networkPassphrase": "Test SDF Network ; September 2015",
+          "reads": [
+            {
+              "check": "network",
+              "observedAt": "2026-09-06T11:07:47.755Z",
+              "ledger": 4533856
+            },
+            {
+              "check": "source",
+              "observedAt": "2026-09-06T11:07:48.010Z"
+            },
+            {
+              "check": "destination",
+              "observedAt": "2026-09-06T11:07:48.009Z"
+            },
+            {
+              "check": "memo",
+              "observedAt": "2026-09-06T11:07:48.003Z"
+            }
+          ],
+          "atomic": false,
+          "sourceLastModifiedLedger": 4533796,
+          "destinationLastModifiedLedger": 4533796,
+          "provider": "https://horizon-testnet.stellar.org",
+          "startedAt": "2026-09-06T11:07:47.280Z",
+          "finishedAt": "2026-09-06T11:07:48.010Z"
+        },
+        "limitations": [
+          "Separate reads are not an atomic snapshot. Refresh before confirmation and whenever the payment changes.",
+          "No supported issue found in observed data does not guarantee transaction success.",
+          "Signatures, sequence numbers, submission, finality and surge-fee inclusion are not assessed.",
+          "Memo checks establish a declared requirement or memo presence, never the intended customer’s identity."
+        ]
+      }
+    }
+  ]
+}
