@@ -1,6 +1,6 @@
 {
   "name": "stellar-check",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Read-only readiness diagnostics for classic Stellar payments",
   "type": "module",
   "license": "Apache-2.0",
